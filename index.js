@@ -1,7 +1,9 @@
 const express = require("express");
 const path = require("path")
+const articles = require("./articles.json")
 
 const app = express();
+
 
 
 app.set('view engine', 'ejs');
@@ -10,7 +12,7 @@ app.set('views', __dirname + '/views')
 
 
 app.get("/", (req, res) => {
-  res.render("index")
+  res.render("index", {articles})
 })
 
 app.get("/contact", (req, res) => {
@@ -20,6 +22,20 @@ app.get("/contact", (req, res) => {
 
 app.get("/about", (req, res) => {
   res.render("about")
+})
+
+app.get("/articles", (req, res) => {
+  res.render("posts", {articles})
+})
+
+app.get("/articles/:slug", (req, res) => {
+  const slug = req.params.slug;
+  const post = articles.find(article => article.slug === slug)
+  if (post) {
+    res.render("post", {article: post})
+  } else {
+    res.render("404")
+  }
 })
 
 app.get("/*", (req, res)=> {

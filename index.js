@@ -1,41 +1,44 @@
-// const http = require("http");
-// const fs = require("fs")
-const path = require("path")
-
-
 const express = require("express");
-
+const path = require("path");
 const app = express();
+const articles = require("./data/db.json");
+app.set("view engine", "ejs");
+app.set("views", __dirname + "/views");
 
 app.get("/", (req, res) => {
-  res.sendFile(path.resolve("./index.html"))
-})
+  res.render("index");
+});
 
 app.get("/contact", (req, res) => {
-  res.sendFile(path.resolve("./contact.html"))
-})
+  res.render("contact");
+});
 
-// const server = http.createServer(function (req, res) {
-//   if (req.url === "/") {
-//     res.writeHead(200, {"Content-Type": "text/html"})
-//     res.end(fs.readFileSync("./index.html", "utf-8"))
-//   } else if (req.url === "/contact") {
-//     // retourner la page contact
-//     res.writeHead(200, {"Content-Type": "text/html"})
-//     res.end(fs.readFileSync("./contact.html", "utf-8"))
-//   } else if(req.url === "/about"){
-//     // retourner la page about
-//   } else {
-//         // retourner la page 404
-//   }
-// });
+app.get("/about", (req, res) => {
+  res.render("about");
+});
+app.get("/articles", (req, res) => {
+  res.render("articles", { articles });
+});
+
+app.get("/articles/:slug", (req, res) => {
+  const {slug} = req.params;
+  const article = articles.find(article => article.slug === slug)
+
+  if(article) {
+    res.render("article", { article });
+  } else {
+    res.render("404");
+  }
+  
+});
+
+app.get("/*", (req, res, next) => {
+  res.render("404");
+});
 
 const port = 3001;
 
-// server.listen(port, function(){
-//     console.log("Le serveur est lancé")
-// })
-
 app.listen(port, function () {
-  console.log("Le serveur est lancé");
+  console.log(`l'application ecoute sur le port ${port}`);
+  console.log(`l'application est disponible sur http://localhost:${port}`);
 });

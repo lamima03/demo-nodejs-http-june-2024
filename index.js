@@ -36,6 +36,11 @@ app.get("/*", (req, res, next) => {
   res.render("404");
 });
 
+app.get("/style", (req, res) => {
+  res.render("style");
+});
+
+
 const port = 3001;
 
 app.listen(port, function () {
